@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Vape House — Premium Vaping</title>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Outfit:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="CSS.css" />
+  </head>
+  <body>
+    <!-- =============================================
+       AGE GATE
+       ============================================= -->
+    <div class="age-gate" id="ag">
+      <div class="ag-flame">🔥</div>
+      <div class="ag-logo"><span class="gt">The Vape House</span></div>
+      <div class="ag-sub">Premium · Luxury · Fire</div>
+      <div class="ag-q">Are you 21 years or older?</div>
+      <div class="ag-note">You must be of legal age to enter this site.</div>
+      <div class="ag-btns">
+        <button class="ag-yes" onclick="enter()">Yes, Enter</button>
+        <button class="ag-no" onclick="location.href = 'https://google.com'">
+          No, Exit
+        </button>
+      </div>
+      <div class="ag-disc">
+        By entering you confirm you are of legal smoking/vaping age in your
+        jurisdiction. Nicotine products are strictly for adults only.
+      </div>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div id="cur">
+      <div
+        style="
+          width: 8px;
+          height: 8px;
+          background: linear-gradient(110deg, #ffd600, #ff5e00);
+          border-radius: 50%;
+          transform: translate(-50%, -50%);
+        "
+      ></div>
+    </div>
+    <div id="cur2"></div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- =============================================
+       NAVIGATION
+       ============================================= -->
+    <nav id="nav">
+      <a href="#" class="nav-logo">
+        <span class="the">The </span><span class="gt">Vape House</span>
+      </a>
+
+      <ul class="nav-links" id="navlinks">
+        <li><a href="#collection">Collection</a></li>
+        <li><a href="#signature">Signature</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+
+      <div class="nav-right">
+        <a href="#" class="nav-cart" onclick="openCart(event)">
+          Cart <span class="n-badge" id="badge">0</span>
+        </a>
+        <div class="hamburger" id="ham" onclick="toggleMobile()">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mnav">
+      <a href="#collection" onclick="toggleMobile()">Collection</a>
+      <a href="#signature" onclick="toggleMobile()">Signature</a>
+      <a href="#contact" onclick="toggleMobile()">Contact</a>
+    </div>
+
+    <!-- =============================================
+       HERO
+       ============================================= -->
+    <section class="hero">
+      <div class="hero-bg-glow"></div>
+      <div class="hero-grid-lines"></div>
+
+      <div class="hero-left">
+        <div class="h-eyebrow">
+          <span class="h-eyebrow-dot"></span>Premium Collection · 2024
+        </div>
+
+        <h1 class="hero-title">
+          <span class="gt">IGNITE</span>
+          <span
+            class="italic"
+            style="
+              -webkit-text-stroke: 1.5px rgba(255, 149, 0, 0.4);
+              color: transparent;
+            "
+            >YOUR</span
+          >
+          <span class="gt">WORLD</span>
+        </h1>
+
+        <div class="hero-divider"></div>
+
+        <p class="hero-desc">
+          Born from passion for flavour and form. Every Vape House device is a
+          statement — engineered for those who demand nothing less than the
+          extraordinary.
+        </p>
+
+        <div class="hero-btns">
+          <a href="#collection" class="btn-fire"><span>Shop Now</span></a>
+          <a href="#signature" class="btn-ghost">Signature Drop</a>
+        </div>
+
+        <div class="hero-stats">
+          <div class="hs-stat">
+            <div class="hs-n">50+</div>
+            <div class="hs-l">Flavours</div>
+          </div>
+          <div class="hs-stat">
+            <div class="hs-n">12K</div>
+            <div class="hs-l">Customers</div>
+          </div>
+          <div class="hs-stat">
+            <div class="hs-n">4.9★</div>
+            <div class="hs-l">Rating</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="h-orbit"></div>
+        <div class="hero-dev-wrap">
+          <div class="hero-dev">
+            <div class="hd-smoke">
+              <div class="hs hs1"></div>
+              <div class="hs hs2"></div>
+              <div class="hs hs3"></div>
+            </div>
+            <div class="hd-tip"></div>
+            <div class="hd-body">
+              <div class="hd-stripe hd-s1"></div>
+              <div class="hd-stripe hd-s2"></div>
+              <div class="hd-diamond"></div>
+              <div class="hd-led"></div>
+            </div>
+            <div class="hd-glow"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================
+       MARQUEE TICKER
+       ============================================= -->
+    <div class="marquee">
+      <div class="mq-track">
+        <span class="mq-i"
+          ><span class="mq-gem"></span>Free delivery over R500</span
+        >
+        <span class="mq-i"
+          ><span class="mq-gem"></span>Lab-certified formulas</span
+        >
+        <span class="mq-i"
+          ><span class="mq-gem"></span>FNB secure payments</span
+        >
+        <span class="mq-i"
+          ><span class="mq-gem"></span>Same-day dispatch · Nationwide</span
+        >
+        <span class="mq-i"><span class="mq-gem"></span>30-day returns</span>
+        <span class="mq-i"
+          ><span class="mq-gem"></span>6 exclusive colours</span
+        >
+        <!-- Duplicated for seamless loop -->
+        <span class="mq-i"
+          ><span class="mq-gem"></span>Free delivery over R500</span
+        >
+        <span class="mq-i"
+          ><span class="mq-gem"></span>Lab-certified formulas</span
+        >
+        <span class="mq-i"
+          ><span class="mq-gem"></span>FNB secure payments</span
+        >
+        <span class="mq-i"
+          ><span class="mq-gem"></span>Same-day dispatch · Nationwide</span
+        >
+        <span class="mq-i"><span class="mq-gem"></span>30-day returns</span>
+        <span class="mq-i"
+          ><span class="mq-gem"></span>6 exclusive colours</span
+        >
+      </div>
+    </div>
+
+    <!-- =============================================
+       COLLECTION
+       ============================================= -->
+    <section class="section" id="collection">
+      <div class="s-head rev">
+        <div>
+          <div class="eyebrow">The Collection</div>
+          <h2 class="sec-title">
+            <span class="gt">Six</span> Colours.<br />One Fire.
+          </h2>
+        </div>
+        <a href="#" class="view-all">View All →</a>
+      </div>
+
+      <div class="pgrid">
+        <!-- 1 · Solar Blaze — Yellow/Amber -->
+        <div class="pc v1 rev">
+          <div class="pc-img">
+            <div class="pc-img-bg"></div>
+            <div
+              class="pc-badge"
+              style="border-color: rgba(255, 180, 0, 0.5); color: #ffb800"
+            >
+              Bestseller
+            </div>
+            <div class="pdev">
+              <div class="pdb">
+                <div class="pdb-line"></div>
+                <div class="pdb-led"></div>
+              </div>
+            </div>
+          </div>
+          <div class="pc-info">
+            <div class="pc-col">Solar · Amber</div>
+            <div class="pc-name">The Inferno</div>
+            <div class="pc-desc">
+              5000 puffs · 5% nicotine · USB-C · Mango, passion fruit &amp;
+              chilli spice
+            </div>
+            <div class="pc-foot">
+              <div class="pc-price"><sup>R</sup>349</div>
+              <button class="atc" onclick="addToCart('The Inferno', 349)">
+                +
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2 · Dusk — Coral/Orange-Red -->
+        <div class="pc v2 rev d1">
+          <div class="pc-img">
+            <div class="pc-img-bg"></div>
+            <div
+              class="pc-badge"
+              style="border-color: rgba(255, 80, 40, 0.5); color: #ff6a40"
+            >
+              New Drop
+            </div>
+            <div class="pdev">
+              <div class="pdb">
+                <div class="pdb-line"></div>
+                <div class="pdb-led"></div>
+              </div>
+            </div>
+          </div>
+          <div class="pc-info">
+            <div class="pc-col">Dusk · Ember</div>
+            <div class="pc-name">The Cinder</div>
+            <div class="pc-desc">
+              7000 puffs · 3% nicotine · Mesh coil · Peach, orange blossom &amp;
+              honey
+            </div>
+            <div class="pc-foot">
+              <div class="pc-price"><sup>R</sup>419</div>
+              <button class="atc" onclick="addToCart('The Cinder', 419)">
+                +
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 · Glacier — Blue/Cyan -->
+        <div class="pc v3 rev d2">
+          <div class="pc-img">
+            <div class="pc-img-bg"></div>
+            <div
+              class="pc-badge"
+              style="border-color: rgba(0, 160, 255, 0.5); color: #00aaff"
+            >
+              Ice Cool
+            </div>
+            <div class="pdev">
+              <div class="pdb">
+                <div class="pdb-line"></div>
+                <div class="pdb-led"></div>
+              </div>
+            </div>
+          </div>
+          <div class="pc-info">
+            <div class="pc-col">Glacier · Arctic</div>
+            <div class="pc-name">The Blizzard</div>
+            <div class="pc-desc">
+              6000 puffs · 2% nicotine · Dual core · Menthol, ice mint &amp;
+              cool lemon
+            </div>
+            <div class="pc-foot">
+              <div class="pc-price"><sup>R</sup>389</div>
+              <button class="atc" onclick="addToCart('The Blizzard', 389)">
+                +
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 · Amethyst — Purple/Violet -->
+        <div class="pc v4 rev">
+          <div class="pc-img">
+            <div class="pc-img-bg"></div>
+            <div
+              class="pc-badge"
+              style="border-color: rgba(140, 50, 255, 0.5); color: #a84fff"
+            >
+              Limited
+            </div>
+            <div class="pdev">
+              <div class="pdb">
+                <div class="pdb-line"></div>
+                <div class="pdb-led"></div>
+              </div>
+            </div>
+          </div>
+          <div class="pc-info">
+            <div class="pc-col">Amethyst · Violet</div>
+            <div class="pc-name">The Phantom</div>
+            <div class="pc-desc">
+              8000 puffs · 5% nicotine · Dark grape, berry &amp; lavender frost
+            </div>
+            <div class="pc-foot">
+              <div class="pc-price"><sup>R</sup>449</div>
+              <button class="atc" onclick="addToCart('The Phantom', 449)">
+                +
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5 · Emerald — Green/Teal -->
+        <div class="pc v5 rev d1">
+          <div class="pc-img">
+            <div class="pc-img-bg"></div>
+            <div class="pdev">
+              <div class="pdb">
+                <div class="pdb-line"></div>
+                <div class="pdb-led"></div>
+              </div>
+            </div>
+          </div>
+          <div class="pc-info">
+            <div class="pc-col">Emerald · Forest</div>
+            <div class="pc-name">The Verdant</div>
+            <div class="pc-desc">
+              6500 puffs · 0% nicotine · Apple, green tea, aloe &amp; mint
+              breeze
+            </div>
+            <div class="pc-foot">
+              <div class="pc-price"><sup>R</sup>329</div>
+              <button class="atc" onclick="addToCart('The Verdant', 329)">
+                +
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6 · Rose Gold — Pink/Blush -->
+        <div class="pc v6 rev d2">
+          <div class="pc-img">
+            <div class="pc-img-bg"></div>
+            <div
+              class="pc-badge"
+              style="border-color: rgba(220, 80, 110, 0.5); color: #ff80a0"
+            >
+              Fan Fave
+            </div>
+            <div class="pdev">
+              <div class="pdb">
+                <div class="pdb-line"></div>
+                <div class="pdb-led"></div>
+              </div>
+            </div>
+          </div>
+          <div class="pc-info">
+            <div class="pc-col">Rose Gold · Blush</div>
+            <div class="pc-name">The Rosé</div>
+            <div class="pc-desc">
+              5500 puffs · 3% nicotine · Strawberry, lychee &amp; rose water
+              mist
+            </div>
+            <div class="pc-foot">
+              <div class="pc-price"><sup>R</sup>369</div>
+              <button class="atc" onclick="addToCart('The Rosé', 369)">
+                +
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================
+       SIGNATURE / FEATURED DROP
+       ============================================= -->
+    <div class="feat-wrap" id="signature">
+      <div class="feat-card rev">
+        <div class="feat-left">
+          <div class="feat-tag">Signature Drop — Limited Edition</div>
+          <h2 class="feat-title">
+            <span class="gt">The</span><br />
+            <em class="gt">Solar</em><br />
+            <span class="gt">Apex</span>
+          </h2>
+          <p class="feat-desc">
+            Our magnum opus. 12,000 draws of structured, layered flavour.
+            Hand-finished amber shell with liquid-gold detailing. Only 500 units
+            — individually numbered.
+          </p>
+          <div class="feat-specs">
+            <div class="fsp">
+              <div class="fsp-l">Draws</div>
+              <div class="fsp-v">12,000</div>
+            </div>
+            <div class="fsp">
+              <div class="fsp-l">Battery</div>
+              <div class="fsp-v">850 mAh</div>
+            </div>
+            <div class="fsp">
+              <div class="fsp-l">Coil</div>
+              <div class="fsp-v">Dual Mesh</div>
+            </div>
+            <div class="fsp">
+              <div class="fsp-l">Nicotine</div>
+              <div class="fsp-v">5% / 2%</div>
+            </div>
+          </div>
+          <button
+            class="btn-fire"
+            onclick="addToCart('Solar Apex – Limited', 749)"
+          >
+            <span>Reserve Yours · R749</span>
+          </button>
+        </div>
+
+        <div class="feat-right">
+          <div class="feat-glow"></div>
+          <div class="feat-ring"></div>
+          <div class="feat-dev-wrap">
+            <div class="feat-dev">
+              <div class="fd">
+                <div class="fd-b1"></div>
+                <div class="fd-b2"></div>
+                <div class="fd-mark"></div>
+                <div class="fd-led"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =============================================
+       ANIMATED FIRE SECTION
+       ============================================= -->
+    <div class="fire-section">
+      <canvas class="fire-canvas" id="fireCanvas"></canvas>
+      <div class="fire-content">
+        <div class="fire-tagline">Feel the Flame.</div>
+        <div class="fire-sub">The Vape House · Premium Since 2024</div>
+      </div>
+    </div>
+
+    <!-- =============================================
+       FOOTER
+       ============================================= -->
+    <footer id="contact">
+      <div>
+        <span class="ft-logo"><span class="gt">The Vape House</span></span>
+        <p class="ft-p">
+          Premium vaping for the discerning adult. Six iconic colours. One
+          unforgettable experience.
+        </p>
+      </div>
+      <div class="ft-col">
+        <h5>Collection</h5>
+        <a href="#">Disposables</a>
+        <a href="#">Pod Systems</a>
+        <a href="#">E-Liquids</a>
+        <a href="#">Gift Sets</a>
+      </div>
+      <div class="ft-col">
+        <h5>Service</h5>
+        <a href="#">Track Order</a>
+        <a href="#">Returns</a>
+        <a href="#">FAQ</a>
+        <a href="#">WhatsApp</a>
+      </div>
+      <div class="ft-col">
+        <h5>Legal</h5>
+        <a href="#">Age Policy</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Shipping</a>
+      </div>
+    </footer>
+
+    <div class="ft-bot">
+      <span class="ft-copy">© 2024 The Vape House — All rights reserved</span>
+      <span class="ft-warn">⚠ 21+ Only · Nicotine is addictive</span>
+    </div>
+
+    <!-- =============================================
+       CHECKOUT MODAL
+       ============================================= -->
+    <div class="overlay" id="ov">
+      <div class="modal">
+        <div class="modal-fire-line"></div>
+
+        <div class="modal-head">
+          <div class="modal-ttl">Your Cart</div>
+          <button class="modal-x" onclick="closeCart()">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <div id="cItems"></div>
+
+          <div class="ct-row">
+            <div class="ct-lbl">Total</div>
+            <div class="ct-amt" id="cTotal">R0</div>
+          </div>
+
+          <!-- Payment Form -->
+          <div class="pf">
+            <div class="pf-ttl">Secure Card Payment</div>
+            <div class="fnb-badge">🔒 FNB · SSL Encrypted · ZAR</div>
+
+            <div class="ct-types">
+              <button class="ctt on" onclick="selectCardType(this)">
+                VISA
+              </button>
+              <button class="ctt" onclick="selectCardType(this)">
+                MASTERCARD
+              </button>
+              <button class="ctt" onclick="selectCardType(this)">AMEX</button>
+            </div>
+
+            <div class="frow">
+              <div class="ff full">
+                <label class="fl">Cardholder Name</label>
+                <input
+                  class="fi"
+                  id="fn"
+                  type="text"
+                  placeholder="As it appears on card"
+                  autocomplete="cc-name"
+                />
+              </div>
+            </div>
+            <div class="frow">
+              <div class="ff full">
+                <label class="fl">Card Number</label>
+                <input
+                  class="fi"
+                  id="cn"
+                  type="text"
+                  placeholder="•••• •••• •••• ••••"
+                  maxlength="19"
+                  autocomplete="cc-number"
+                />
+              </div>
+            </div>
+            <div class="frow">
+              <div class="ff">
+                <label class="fl">Expiry</label>
+                <input
+                  class="fi"
+                  id="ex"
+                  type="text"
+                  placeholder="MM / YY"
+                  maxlength="7"
+                  autocomplete="cc-exp"
+                />
+              </div>
+              <div class="ff">
+                <label class="fl">CVV</label>
+                <input
+                  class="fi"
+                  id="cv"
+                  type="text"
+                  placeholder="•••"
+                  maxlength="4"
+                  autocomplete="cc-csc"
+                />
+              </div>
+            </div>
+            <div class="frow">
+              <div class="ff full">
+                <label class="fl">Email for Receipt</label>
+                <input
+                  class="fi"
+                  id="em"
+                  type="email"
+                  placeholder="your@email.com"
+                  autocomplete="email"
+                />
+              </div>
+            </div>
+
+            <button class="pay-main" onclick="pay()">
+              <span id="pb">Complete Purchase</span>
+            </button>
+            <div class="pay-sec-note">
+              Card details are encrypted and processed securely via FNB.<br />
+              We never store your card information.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JavaScript (loaded last for performance) -->
+    <script src="main.js"></script>
+  </body>
+</html>
