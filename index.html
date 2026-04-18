@@ -1,634 +1,505 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>The Vape House — Premium Vaping</title>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Vape House — Premium Vaping</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ── PRODUCT IMAGE GRID ── */
+    .pgrid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      background: transparent;
+    }
+    @media (max-width: 900px) { .pgrid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px)  { .pgrid { grid-template-columns: 1fr; } }
 
-    <!-- Google Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Outfit:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    .pc {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: none;
+      transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s, border-color .35s;
+      position: relative;
+    }
+    .pc:hover {
+      transform: translateY(-6px) scale(1.02);
+      border-color: var(--border2);
+      box-shadow: 0 20px 60px rgba(0,0,0,.5), 0 0 30px rgba(255,149,0,.1);
+    }
+    .pc::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--grad);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform .45s cubic-bezier(.16,1,.3,1);
+      z-index: 3;
+    }
+    .pc:hover::before { transform: scaleX(1); }
 
-    <!-- Stylesheet -->
-    <link rel="stylesheet" href="CSS.css" />
-  </head>
-  <body>
-    <!-- =============================================
-       AGE GATE
-       ============================================= -->
-    <div class="age-gate" id="ag">
-      <div class="ag-flame">🔥</div>
-      <div class="ag-logo"><span class="gt">The Vape House</span></div>
-      <div class="ag-sub">Premium · Luxury · Fire</div>
-      <div class="ag-q">Are you 21 years or older?</div>
-      <div class="ag-note">You must be of legal age to enter this site.</div>
-      <div class="ag-btns">
-        <button class="ag-yes" onclick="enter()">Yes, Enter</button>
-        <button class="ag-no" onclick="location.href = 'https://google.com'">
-          No, Exit
-        </button>
+    .pc-img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      display: block;
+      position: relative;
+    }
+    .pc-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      transition: transform .5s cubic-bezier(.16,1,.3,1);
+    }
+    .pc:hover .pc-img img { transform: scale(1.06); }
+
+    .pc-info {
+      padding: 14px 16px 16px;
+      border-top: 1px solid var(--border);
+    }
+    .pc-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(13px, 1.4vw, 16px);
+      font-weight: 700;
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+    .pc-desc {
+      font-size: 10px;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+    .atc {
+      width: 100%;
+      height: 38px;
+      background: transparent;
+      border: 1px solid var(--border2);
+      color: var(--a);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: none;
+      transition: all .3s;
+      clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+    }
+    .atc:hover {
+      background: var(--grad);
+      color: var(--bg);
+      border-color: transparent;
+      box-shadow: 0 4px 20px rgba(255,94,0,.3);
+    }
+
+    /* ── LIGHTBOX ── */
+    .lb {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.93);
+      backdrop-filter: blur(20px);
+      z-index: 8000;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity .4s;
+      padding: 16px;
+    }
+    .lb.open { opacity: 1; pointer-events: all; }
+    .lb-img {
+      max-width: min(560px, 92vw);
+      max-height: 90vh;
+      object-fit: contain;
+      border: 1px solid var(--border2);
+      transform: scale(.92);
+      transition: transform .4s cubic-bezier(.16,1,.3,1);
+      border-radius: 4px;
+    }
+    .lb.open .lb-img { transform: scale(1); }
+    .lb-close {
+      position: absolute; top: 20px; right: 24px;
+      width: 40px; height: 40px;
+      background: rgba(255,149,0,.12); border: 1px solid var(--border2);
+      color: var(--a); font-size: 18px; cursor: none;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .3s; border-radius: 2px;
+    }
+    .lb-close:hover { background: var(--o); color: #fff; }
+
+    /* ── CONTACT BAR ── */
+    .contact-bar {
+      background: var(--bg2);
+      border-top: 2px solid transparent;
+      border-image: var(--grad) 1;
+      padding: 28px clamp(20px,5vw,72px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(28px,5vw,80px);
+      flex-wrap: wrap;
+    }
+    .cb-item {
+      display: flex; align-items: center; gap: 14px;
+      text-decoration: none; transition: transform .3s;
+    }
+    .cb-item:hover { transform: translateY(-2px); }
+    .cb-icon { font-size: 24px; }
+    .cb-lbl { font-size: 8px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+    .cb-val  { font-family: 'Playfair Display', serif; font-size: clamp(14px,1.5vw,17px); font-weight: 700; color: var(--text); }
+  </style>
+</head>
+<body>
+
+  <!-- AGE GATE -->
+  <div class="age-gate" id="ag">
+    <div class="ag-flame">🔥</div>
+    <div class="ag-logo"><span class="gt">The Vape House</span></div>
+    <div class="ag-sub">Premium Vapor Shop &amp; Lounge</div>
+    <div class="ag-q">Are you 21 years or older?</div>
+    <div class="ag-note">You must be of legal age to enter this site.</div>
+    <div class="ag-btns">
+      <button class="ag-yes" onclick="enter()">Yes, Enter</button>
+      <button class="ag-no"  onclick="location.href='https://google.com'">No, Exit</button>
+    </div>
+    <div class="ag-disc">By entering you confirm you are of legal smoking/vaping age in your jurisdiction. Nicotine products are strictly for adults only.</div>
+  </div>
+
+  <!-- Custom Cursor -->
+  <div id="cur"><div style="width:8px;height:8px;background:linear-gradient(110deg,#FFD600,#FF5E00);border-radius:50%;transform:translate(-50%,-50%);"></div></div>
+  <div id="cur2"></div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Lightbox -->
+  <div class="lb" id="lb" onclick="closeLb(event)">
+    <button class="lb-close" onclick="closeLb()">✕</button>
+    <img class="lb-img" id="lbImg" src="" alt="Product">
+  </div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a href="#" class="nav-logo"><span class="the">The </span><span class="gt">Vape House</span></a>
+    <ul class="nav-links" id="navlinks">
+      <li><a href="#collection">Products</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="#" class="nav-cart" onclick="openCart(event)">Cart <span class="n-badge" id="badge">0</span></a>
+      <div class="hamburger" id="ham" onclick="toggleMobile()"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" id="mnav">
+    <a href="#collection" onclick="toggleMobile()">Products</a>
+    <a href="#contact"    onclick="toggleMobile()">Contact</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg-glow"></div>
+    <div class="hero-grid-lines"></div>
+    <div class="hero-left">
+      <div class="h-eyebrow"><span class="h-eyebrow-dot"></span>Premium Vapor Shop &amp; Lounge</div>
+      <h1 class="hero-title">
+        <span class="gt">IGNITE</span>
+        <span class="italic" style="-webkit-text-stroke:1.5px rgba(255,149,0,.4);color:transparent;">YOUR</span>
+        <span class="gt">WORLD</span>
+      </h1>
+      <div class="hero-divider"></div>
+      <p class="hero-desc">The Vape House — your trusted source for premium disposables, pods, and flavours. New arrivals weekly. Find us on Facebook &amp; Instagram.</p>
+      <div class="hero-btns">
+        <a href="#collection" class="btn-fire"><span>Shop Now</span></a>
+        <a href="#contact" class="btn-ghost">Contact Us</a>
       </div>
-      <div class="ag-disc">
-        By entering you confirm you are of legal smoking/vaping age in your
-        jurisdiction. Nicotine products are strictly for adults only.
+      <div class="hero-stats">
+        <div class="hs-stat"><div class="hs-n">11+</div><div class="hs-l">Products</div></div>
+        <div class="hs-stat"><div class="hs-n">28K</div><div class="hs-l">Max Puffs</div></div>
+        <div class="hs-stat"><div class="hs-n">5★</div><div class="hs-l">Rated</div></div>
       </div>
     </div>
-
-    <!-- Custom Cursor -->
-    <div id="cur">
-      <div
-        style="
-          width: 8px;
-          height: 8px;
-          background: linear-gradient(110deg, #ffd600, #ff5e00);
-          border-radius: 50%;
-          transform: translate(-50%, -50%);
-        "
-      ></div>
-    </div>
-    <div id="cur2"></div>
-
-    <!-- Toast Notification -->
-    <div class="toast" id="toast"></div>
-
-    <!-- =============================================
-       NAVIGATION
-       ============================================= -->
-    <nav id="nav">
-      <a href="#" class="nav-logo">
-        <span class="the">The </span><span class="gt">Vape House</span>
-      </a>
-
-      <ul class="nav-links" id="navlinks">
-        <li><a href="#collection">Collection</a></li>
-        <li><a href="#signature">Signature</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-
-      <div class="nav-right">
-        <a href="#" class="nav-cart" onclick="openCart(event)">
-          Cart <span class="n-badge" id="badge">0</span>
-        </a>
-        <div class="hamburger" id="ham" onclick="toggleMobile()">
-          <span></span><span></span><span></span>
-        </div>
-      </div>
-    </nav>
-
-    <!-- Mobile Navigation -->
-    <div class="mobile-nav" id="mnav">
-      <a href="#collection" onclick="toggleMobile()">Collection</a>
-      <a href="#signature" onclick="toggleMobile()">Signature</a>
-      <a href="#contact" onclick="toggleMobile()">Contact</a>
-    </div>
-
-    <!-- =============================================
-       HERO
-       ============================================= -->
-    <section class="hero">
-      <div class="hero-bg-glow"></div>
-      <div class="hero-grid-lines"></div>
-
-      <div class="hero-left">
-        <div class="h-eyebrow">
-          <span class="h-eyebrow-dot"></span>Premium Collection · 2024
-        </div>
-
-        <h1 class="hero-title">
-          <span class="gt">IGNITE</span>
-          <span
-            class="italic"
-            style="
-              -webkit-text-stroke: 1.5px rgba(255, 149, 0, 0.4);
-              color: transparent;
-            "
-            >YOUR</span
-          >
-          <span class="gt">WORLD</span>
-        </h1>
-
-        <div class="hero-divider"></div>
-
-        <p class="hero-desc">
-          Born from passion for flavour and form. Every Vape House device is a
-          statement — engineered for those who demand nothing less than the
-          extraordinary.
-        </p>
-
-        <div class="hero-btns">
-          <a href="#collection" class="btn-fire"><span>Shop Now</span></a>
-          <a href="#signature" class="btn-ghost">Signature Drop</a>
-        </div>
-
-        <div class="hero-stats">
-          <div class="hs-stat">
-            <div class="hs-n">50+</div>
-            <div class="hs-l">Flavours</div>
+    <div class="hero-right">
+      <div class="h-orbit"></div>
+      <div class="hero-dev-wrap">
+        <div class="hero-dev">
+          <div class="hd-smoke"><div class="hs hs1"></div><div class="hs hs2"></div><div class="hs hs3"></div></div>
+          <div class="hd-tip"></div>
+          <div class="hd-body">
+            <div class="hd-stripe hd-s1"></div>
+            <div class="hd-stripe hd-s2"></div>
+            <div class="hd-diamond"></div>
+            <div class="hd-led"></div>
           </div>
-          <div class="hs-stat">
-            <div class="hs-n">12K</div>
-            <div class="hs-l">Customers</div>
-          </div>
-          <div class="hs-stat">
-            <div class="hs-n">4.9★</div>
-            <div class="hs-l">Rating</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="hero-right">
-        <div class="h-orbit"></div>
-        <div class="hero-dev-wrap">
-          <div class="hero-dev">
-            <div class="hd-smoke">
-              <div class="hs hs1"></div>
-              <div class="hs hs2"></div>
-              <div class="hs hs3"></div>
-            </div>
-            <div class="hd-tip"></div>
-            <div class="hd-body">
-              <div class="hd-stripe hd-s1"></div>
-              <div class="hd-stripe hd-s2"></div>
-              <div class="hd-diamond"></div>
-              <div class="hd-led"></div>
-            </div>
-            <div class="hd-glow"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- =============================================
-       MARQUEE TICKER
-       ============================================= -->
-    <div class="marquee">
-      <div class="mq-track">
-        <span class="mq-i"
-          ><span class="mq-gem"></span>Free delivery over R500</span
-        >
-        <span class="mq-i"
-          ><span class="mq-gem"></span>Lab-certified formulas</span
-        >
-        <span class="mq-i"
-          ><span class="mq-gem"></span>FNB secure payments</span
-        >
-        <span class="mq-i"
-          ><span class="mq-gem"></span>Same-day dispatch · Nationwide</span
-        >
-        <span class="mq-i"><span class="mq-gem"></span>30-day returns</span>
-        <span class="mq-i"
-          ><span class="mq-gem"></span>6 exclusive colours</span
-        >
-        <!-- Duplicated for seamless loop -->
-        <span class="mq-i"
-          ><span class="mq-gem"></span>Free delivery over R500</span
-        >
-        <span class="mq-i"
-          ><span class="mq-gem"></span>Lab-certified formulas</span
-        >
-        <span class="mq-i"
-          ><span class="mq-gem"></span>FNB secure payments</span
-        >
-        <span class="mq-i"
-          ><span class="mq-gem"></span>Same-day dispatch · Nationwide</span
-        >
-        <span class="mq-i"><span class="mq-gem"></span>30-day returns</span>
-        <span class="mq-i"
-          ><span class="mq-gem"></span>6 exclusive colours</span
-        >
-      </div>
-    </div>
-
-    <!-- =============================================
-       COLLECTION
-       ============================================= -->
-    <section class="section" id="collection">
-      <div class="s-head rev">
-        <div>
-          <div class="eyebrow">The Collection</div>
-          <h2 class="sec-title">
-            <span class="gt">Six</span> Colours.<br />One Fire.
-          </h2>
-        </div>
-        <a href="#" class="view-all">View All →</a>
-      </div>
-
-      <div class="pgrid">
-        <!-- 1 · Solar Blaze — Yellow/Amber -->
-        <div class="pc v1 rev">
-          <div class="pc-img">
-            <div class="pc-img-bg"></div>
-            <div
-              class="pc-badge"
-              style="border-color: rgba(255, 180, 0, 0.5); color: #ffb800"
-            >
-              Bestseller
-            </div>
-            <div class="pdev">
-              <div class="pdb">
-                <div class="pdb-line"></div>
-                <div class="pdb-led"></div>
-              </div>
-            </div>
-          </div>
-          <div class="pc-info">
-            <div class="pc-col">Solar · Amber</div>
-            <div class="pc-name">The Inferno</div>
-            <div class="pc-desc">
-              5000 puffs · 5% nicotine · USB-C · Mango, passion fruit &amp;
-              chilli spice
-            </div>
-            <div class="pc-foot">
-              <div class="pc-price"><sup>R</sup>349</div>
-              <button class="atc" onclick="addToCart('The Inferno', 349)">
-                +
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2 · Dusk — Coral/Orange-Red -->
-        <div class="pc v2 rev d1">
-          <div class="pc-img">
-            <div class="pc-img-bg"></div>
-            <div
-              class="pc-badge"
-              style="border-color: rgba(255, 80, 40, 0.5); color: #ff6a40"
-            >
-              New Drop
-            </div>
-            <div class="pdev">
-              <div class="pdb">
-                <div class="pdb-line"></div>
-                <div class="pdb-led"></div>
-              </div>
-            </div>
-          </div>
-          <div class="pc-info">
-            <div class="pc-col">Dusk · Ember</div>
-            <div class="pc-name">The Cinder</div>
-            <div class="pc-desc">
-              7000 puffs · 3% nicotine · Mesh coil · Peach, orange blossom &amp;
-              honey
-            </div>
-            <div class="pc-foot">
-              <div class="pc-price"><sup>R</sup>419</div>
-              <button class="atc" onclick="addToCart('The Cinder', 419)">
-                +
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 3 · Glacier — Blue/Cyan -->
-        <div class="pc v3 rev d2">
-          <div class="pc-img">
-            <div class="pc-img-bg"></div>
-            <div
-              class="pc-badge"
-              style="border-color: rgba(0, 160, 255, 0.5); color: #00aaff"
-            >
-              Ice Cool
-            </div>
-            <div class="pdev">
-              <div class="pdb">
-                <div class="pdb-line"></div>
-                <div class="pdb-led"></div>
-              </div>
-            </div>
-          </div>
-          <div class="pc-info">
-            <div class="pc-col">Glacier · Arctic</div>
-            <div class="pc-name">The Blizzard</div>
-            <div class="pc-desc">
-              6000 puffs · 2% nicotine · Dual core · Menthol, ice mint &amp;
-              cool lemon
-            </div>
-            <div class="pc-foot">
-              <div class="pc-price"><sup>R</sup>389</div>
-              <button class="atc" onclick="addToCart('The Blizzard', 389)">
-                +
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4 · Amethyst — Purple/Violet -->
-        <div class="pc v4 rev">
-          <div class="pc-img">
-            <div class="pc-img-bg"></div>
-            <div
-              class="pc-badge"
-              style="border-color: rgba(140, 50, 255, 0.5); color: #a84fff"
-            >
-              Limited
-            </div>
-            <div class="pdev">
-              <div class="pdb">
-                <div class="pdb-line"></div>
-                <div class="pdb-led"></div>
-              </div>
-            </div>
-          </div>
-          <div class="pc-info">
-            <div class="pc-col">Amethyst · Violet</div>
-            <div class="pc-name">The Phantom</div>
-            <div class="pc-desc">
-              8000 puffs · 5% nicotine · Dark grape, berry &amp; lavender frost
-            </div>
-            <div class="pc-foot">
-              <div class="pc-price"><sup>R</sup>449</div>
-              <button class="atc" onclick="addToCart('The Phantom', 449)">
-                +
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 5 · Emerald — Green/Teal -->
-        <div class="pc v5 rev d1">
-          <div class="pc-img">
-            <div class="pc-img-bg"></div>
-            <div class="pdev">
-              <div class="pdb">
-                <div class="pdb-line"></div>
-                <div class="pdb-led"></div>
-              </div>
-            </div>
-          </div>
-          <div class="pc-info">
-            <div class="pc-col">Emerald · Forest</div>
-            <div class="pc-name">The Verdant</div>
-            <div class="pc-desc">
-              6500 puffs · 0% nicotine · Apple, green tea, aloe &amp; mint
-              breeze
-            </div>
-            <div class="pc-foot">
-              <div class="pc-price"><sup>R</sup>329</div>
-              <button class="atc" onclick="addToCart('The Verdant', 329)">
-                +
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 6 · Rose Gold — Pink/Blush -->
-        <div class="pc v6 rev d2">
-          <div class="pc-img">
-            <div class="pc-img-bg"></div>
-            <div
-              class="pc-badge"
-              style="border-color: rgba(220, 80, 110, 0.5); color: #ff80a0"
-            >
-              Fan Fave
-            </div>
-            <div class="pdev">
-              <div class="pdb">
-                <div class="pdb-line"></div>
-                <div class="pdb-led"></div>
-              </div>
-            </div>
-          </div>
-          <div class="pc-info">
-            <div class="pc-col">Rose Gold · Blush</div>
-            <div class="pc-name">The Rosé</div>
-            <div class="pc-desc">
-              5500 puffs · 3% nicotine · Strawberry, lychee &amp; rose water
-              mist
-            </div>
-            <div class="pc-foot">
-              <div class="pc-price"><sup>R</sup>369</div>
-              <button class="atc" onclick="addToCart('The Rosé', 369)">
-                +
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- =============================================
-       SIGNATURE / FEATURED DROP
-       ============================================= -->
-    <div class="feat-wrap" id="signature">
-      <div class="feat-card rev">
-        <div class="feat-left">
-          <div class="feat-tag">Signature Drop — Limited Edition</div>
-          <h2 class="feat-title">
-            <span class="gt">The</span><br />
-            <em class="gt">Solar</em><br />
-            <span class="gt">Apex</span>
-          </h2>
-          <p class="feat-desc">
-            Our magnum opus. 12,000 draws of structured, layered flavour.
-            Hand-finished amber shell with liquid-gold detailing. Only 500 units
-            — individually numbered.
-          </p>
-          <div class="feat-specs">
-            <div class="fsp">
-              <div class="fsp-l">Draws</div>
-              <div class="fsp-v">12,000</div>
-            </div>
-            <div class="fsp">
-              <div class="fsp-l">Battery</div>
-              <div class="fsp-v">850 mAh</div>
-            </div>
-            <div class="fsp">
-              <div class="fsp-l">Coil</div>
-              <div class="fsp-v">Dual Mesh</div>
-            </div>
-            <div class="fsp">
-              <div class="fsp-l">Nicotine</div>
-              <div class="fsp-v">5% / 2%</div>
-            </div>
-          </div>
-          <button
-            class="btn-fire"
-            onclick="addToCart('Solar Apex – Limited', 749)"
-          >
-            <span>Reserve Yours · R749</span>
-          </button>
-        </div>
-
-        <div class="feat-right">
-          <div class="feat-glow"></div>
-          <div class="feat-ring"></div>
-          <div class="feat-dev-wrap">
-            <div class="feat-dev">
-              <div class="fd">
-                <div class="fd-b1"></div>
-                <div class="fd-b2"></div>
-                <div class="fd-mark"></div>
-                <div class="fd-led"></div>
-              </div>
-            </div>
-          </div>
+          <div class="hd-glow"></div>
         </div>
       </div>
     </div>
+  </section>
 
-    <!-- =============================================
-       ANIMATED FIRE SECTION
-       ============================================= -->
-    <div class="fire-section">
-      <canvas class="fire-canvas" id="fireCanvas"></canvas>
-      <div class="fire-content">
-        <div class="fire-tagline">Feel the Flame.</div>
-        <div class="fire-sub">The Vape House · Premium Since 2024</div>
-      </div>
+  <!-- MARQUEE -->
+  <div class="marquee">
+    <div class="mq-track">
+      <span class="mq-i"><span class="mq-gem"></span>Nasty Bar D14Ki — P500</span>
+      <span class="mq-i"><span class="mq-gem"></span>Snapbar SD20000 — P280</span>
+      <span class="mq-i"><span class="mq-gem"></span>Play by Nasty 28K — P350</span>
+      <span class="mq-i"><span class="mq-gem"></span>Boss Zoom 10K — P210</span>
+      <span class="mq-i"><span class="mq-gem"></span>Rodman 9,100 — P240</span>
+      <span class="mq-i"><span class="mq-gem"></span>Adalya Love66 — P200</span>
+      <span class="mq-i"><span class="mq-gem"></span>YOVO 8000 — P200</span>
+      <span class="mq-i"><span class="mq-gem"></span>Call: 78456656</span>
+      <span class="mq-i"><span class="mq-gem"></span>Nasty Bar D14Ki — P500</span>
+      <span class="mq-i"><span class="mq-gem"></span>Snapbar SD20000 — P280</span>
+      <span class="mq-i"><span class="mq-gem"></span>Play by Nasty 28K — P350</span>
+      <span class="mq-i"><span class="mq-gem"></span>Boss Zoom 10K — P210</span>
+      <span class="mq-i"><span class="mq-gem"></span>Rodman 9,100 — P240</span>
+      <span class="mq-i"><span class="mq-gem"></span>Adalya Love66 — P200</span>
+      <span class="mq-i"><span class="mq-gem"></span>YOVO 8000 — P200</span>
+      <span class="mq-i"><span class="mq-gem"></span>Call: 78456656</span>
     </div>
+  </div>
 
-    <!-- =============================================
-       FOOTER
-       ============================================= -->
-    <footer id="contact">
+  <!-- COLLECTION -->
+  <section class="section" id="collection">
+    <div class="s-head rev">
       <div>
-        <span class="ft-logo"><span class="gt">The Vape House</span></span>
-        <p class="ft-p">
-          Premium vaping for the discerning adult. Six iconic colours. One
-          unforgettable experience.
-        </p>
-      </div>
-      <div class="ft-col">
-        <h5>Collection</h5>
-        <a href="#">Disposables</a>
-        <a href="#">Pod Systems</a>
-        <a href="#">E-Liquids</a>
-        <a href="#">Gift Sets</a>
-      </div>
-      <div class="ft-col">
-        <h5>Service</h5>
-        <a href="#">Track Order</a>
-        <a href="#">Returns</a>
-        <a href="#">FAQ</a>
-        <a href="#">WhatsApp</a>
-      </div>
-      <div class="ft-col">
-        <h5>Legal</h5>
-        <a href="#">Age Policy</a>
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
-        <a href="#">Shipping</a>
-      </div>
-    </footer>
-
-    <div class="ft-bot">
-      <span class="ft-copy">© 2024 The Vape House — All rights reserved</span>
-      <span class="ft-warn">⚠ 21+ Only · Nicotine is addictive</span>
-    </div>
-
-    <!-- =============================================
-       CHECKOUT MODAL
-       ============================================= -->
-    <div class="overlay" id="ov">
-      <div class="modal">
-        <div class="modal-fire-line"></div>
-
-        <div class="modal-head">
-          <div class="modal-ttl">Your Cart</div>
-          <button class="modal-x" onclick="closeCart()">✕</button>
-        </div>
-
-        <div class="modal-body">
-          <div id="cItems"></div>
-
-          <div class="ct-row">
-            <div class="ct-lbl">Total</div>
-            <div class="ct-amt" id="cTotal">R0</div>
-          </div>
-
-          <!-- Payment Form -->
-          <div class="pf">
-            <div class="pf-ttl">Secure Card Payment</div>
-            <div class="fnb-badge">🔒 FNB · SSL Encrypted · ZAR</div>
-
-            <div class="ct-types">
-              <button class="ctt on" onclick="selectCardType(this)">
-                VISA
-              </button>
-              <button class="ctt" onclick="selectCardType(this)">
-                MASTERCARD
-              </button>
-              <button class="ctt" onclick="selectCardType(this)">AMEX</button>
-            </div>
-
-            <div class="frow">
-              <div class="ff full">
-                <label class="fl">Cardholder Name</label>
-                <input
-                  class="fi"
-                  id="fn"
-                  type="text"
-                  placeholder="As it appears on card"
-                  autocomplete="cc-name"
-                />
-              </div>
-            </div>
-            <div class="frow">
-              <div class="ff full">
-                <label class="fl">Card Number</label>
-                <input
-                  class="fi"
-                  id="cn"
-                  type="text"
-                  placeholder="•••• •••• •••• ••••"
-                  maxlength="19"
-                  autocomplete="cc-number"
-                />
-              </div>
-            </div>
-            <div class="frow">
-              <div class="ff">
-                <label class="fl">Expiry</label>
-                <input
-                  class="fi"
-                  id="ex"
-                  type="text"
-                  placeholder="MM / YY"
-                  maxlength="7"
-                  autocomplete="cc-exp"
-                />
-              </div>
-              <div class="ff">
-                <label class="fl">CVV</label>
-                <input
-                  class="fi"
-                  id="cv"
-                  type="text"
-                  placeholder="•••"
-                  maxlength="4"
-                  autocomplete="cc-csc"
-                />
-              </div>
-            </div>
-            <div class="frow">
-              <div class="ff full">
-                <label class="fl">Email for Receipt</label>
-                <input
-                  class="fi"
-                  id="em"
-                  type="email"
-                  placeholder="your@email.com"
-                  autocomplete="email"
-                />
-              </div>
-            </div>
-
-            <button class="pay-main" onclick="pay()">
-              <span id="pb">Complete Purchase</span>
-            </button>
-            <div class="pay-sec-note">
-              Card details are encrypted and processed securely via FNB.<br />
-              We never store your card information.
-            </div>
-          </div>
-        </div>
+        <div class="eyebrow">Our Products</div>
+        <h2 class="sec-title"><span class="gt">All</span> Products</h2>
       </div>
     </div>
 
-    <!-- JavaScript (loaded last for performance) -->
-    <script src="main.js"></script>
-  </body>
+    <div class="pgrid">
+
+      <!-- 1 -->
+      <div class="pc rev" onclick="openLb('images/p1_snapbar.jpg')">
+        <div class="pc-img"><img src="images/p1_snapbar.jpg" alt="Snapbar SD20000" loading="lazy"></div>
+        <div class="pc-info">
+          <div class="pc-name">Snapbar SD20000</div>
+          <div class="pc-desc">20,000+ Puffs · 5% Nicotine · AI Voice Control · Digital Display</div>
+          <button class="atc" onclick="event.stopPropagation();addToCart('Snapbar SD20000',280)">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="pc rev d1" onclick="openLb('images/p2_nastybar.jpg')">
+        <div class="pc-img"><img src="images/p2_nastybar.jpg" alt="Nasty Bar D14Ki" loading="lazy"></div>
+        <div class="pc-info">
+          <div class="pc-name">Nasty Bar D14Ki</div>
+          <div class="pc-desc">14,000+ Puffs · Cotton Candy · 5% Nicotine · Rechargeable</div>
+          <button class="atc" onclick="event.stopPropagation();addToCart('Nasty Bar D14Ki',500)">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="pc rev d2" onclick="openLb('images/p3_boss.jpg')">
+        <div class="pc-img"><img src="images/p3_boss.jpg" alt="Boss Zoom Gummy Bear" loading="lazy"></div>
+        <div class="pc-info">
+          <div class="pc-name">Boss Zoom — Gummy Bear</div>
+          <div class="pc-desc">10,000 Puffs · Gummy Bear Flavor · Kamry</div>
+          <button class="atc" onclick="event.stopPropagation();addToCart('Boss Zoom Gummy Bear',210)">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="pc rev" onclick="openLb('images/p4_adalya.jpg')">
+        <div class="pc-img"><img src="images/p4_adalya.jpg" alt="Adalya Love66" loading="lazy"></div>
+        <div class="pc-info">
+          <div class="pc-name">Adalya Premium Love66</div>
+          <div class="pc-desc">500+ Puffs · Exotic Shisha Flavor · Type-C Fast Charging</div>
+          <button class="atc" onclick="event.stopPropagation();addToCart('Adalya Love66',200)">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="pc rev d1" onclick="openLb('images/p5_nastybar2.jpg')">
+        <div class="pc-img"><img src="images/p5_nastybar2.jpg" alt="Nasty Bar D14Ki Cotton Candy" loading="lazy"></div>
+        <div class="pc-info">
+          <div class="pc-name">Nasty Bar D14Ki — Cotton Candy</div>
+          <div class="pc-desc">14,000+ Puffs · 50mg/mL · Rechargeable Battery · D14Ki Series</div>
+          <button class="atc" onclick="event.stopPropagation();addToCart('Nasty Bar D14Ki Cotton Candy',500)">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- 6 -->
+      <div class="pc rev d2" onclick="openLb('images/p6_vaplos.jpg')">
+        <div class="pc-img"><img src="images/p6_vaplos.jpg" alt="Vaplos Spark 12000" loading="lazy"></div>
+        <div class="pc-info">
+          <div class="pc-name">Vaplos Spark 12000</div>
+          <div class="pc-desc">12,000 Puffs · Rich Tobacco · Smart Display · Type-C Rechargeable</div>
+          <button class="atc" onclick="event.stopPropagation();addToCart('Vaplos Spark 12000',200)">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- 7 -->
+      <div class="pc rev" onclick="openLb('images/p7_rodman.jpg')">
+        <div class="pc-img"><img src="images/p7_rodman.jpg" alt="Rodman 9100 Cool Mint" loading="lazy"></div>
+        <div class="pc-info">
+          <div class="pc-name">Rodman 9,100 Puffs</div>
+          <div class="pc-desc">Cool Mint · By Aloha Sun · 5% Nicotine · Type-C Fast Charging</div>
+          <button class="atc" onclick="event.stopPropagation();addToCart('Rodman 9100',240)">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- 8 -->
+      <div class="pc rev d1" onclick="openLb('images/p8_yovo.jpg')">
+        <div class="pc-img"><img src="images/p8_yovo.jpg" alt="YOVO 8000" loading="lazy"></div>
+        <div class="pc-info">
+          <div class="pc-name">YOVO 8000 Puffs</div>
+          <div class="pc-desc">Watermelon Ice &amp; Alphonso Mango · 0.8Ω Mesh · Dual Indicators</div>
+          <button class="atc" onclick="event.stopPropagation();addToCart('YOVO 8000',200)">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- 9 -->
+      <div class="pc rev d2" onclick="openLb('images/p9_airis.jpg')">
+        <div class="pc-img"><img src="images/p9_airis.jpg" alt="Airis Speedy RS 15K" loading="lazy"></div>
+        <div class="pc-info">
+          <div class="pc-name">Airis Speedy RS 15K</div>
+          <div class="pc-desc">Blue Razz Ice · Dual Mesh · Dual Mode Display · Speedy Dual Charging</div>
+          <button class="atc" onclick="event.stopPropagation();addToCart('Airis Speedy RS 15K',200)">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- 10 -->
+      <div class="pc rev" onclick="openLb('images/p10_jnr.jpg')">
+        <div class="pc-img"><img src="images/p10_jnr.jpg" alt="JNR Crystal Pro Max" loading="lazy"></div>
+        <div class="pc-info">
+          <div class="pc-name">JNR Crystal Pro Max</div>
+          <div class="pc-desc">5000+ Puffs · Lemon &amp; Lime · 15ml E-Liquid · Type-C Fast Charging</div>
+          <button class="atc" onclick="event.stopPropagation();addToCart('JNR Crystal Pro Max',200)">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- 11 -->
+      <div class="pc rev d1" onclick="openLb('images/p11_play.jpg')">
+        <div class="pc-img"><img src="images/p11_play.jpg" alt="Play by Nasty 28K" loading="lazy"></div>
+        <div class="pc-info">
+          <div class="pc-name">Play by Nasty 28K</div>
+          <div class="pc-desc">28,000 Puffs · Fingerprint Touch · Dual Mesh · 850mAh · Type-C</div>
+          <button class="atc" onclick="event.stopPropagation();addToCart('Play by Nasty 28K',350)">Add to Cart</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FIRE SECTION -->
+  <div class="fire-section">
+    <canvas class="fire-canvas" id="fireCanvas"></canvas>
+    <div class="fire-content">
+      <div class="fire-tagline">Feel the Flame.</div>
+      <div class="fire-sub">The Vape House · Premium Vapor Shop &amp; Lounge</div>
+    </div>
+  </div>
+
+  <!-- CONTACT BAR -->
+  <div class="contact-bar" id="contact">
+    <a class="cb-item" href="tel:78456656">
+      <span class="cb-icon">📞</span>
+      <div><div class="cb-lbl">Call Us</div><div class="cb-val">78456656</div></div>
+    </a>
+    <a class="cb-item" href="https://www.facebook.com/THE VAPE HOUSE" target="_blank">
+      <span class="cb-icon">📘</span>
+      <div><div class="cb-lbl">Facebook</div><div class="cb-val">The Vape House</div></div>
+    </a>
+    <a class="cb-item" href="https://instagram.com/THE_VAPE_HOUSE2026" target="_blank">
+      <span class="cb-icon">📷</span>
+      <div><div class="cb-lbl">Instagram</div><div class="cb-val">@THE_VAPE_HOUSE2026</div></div>
+    </a>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div>
+      <span class="ft-logo"><span class="gt">The Vape House</span></span>
+      <p class="ft-p">Premium Vapor Shop &amp; Lounge. Serving the best disposables and pod systems. New arrivals every week.</p>
+    </div>
+    <div class="ft-col">
+      <h5>Products</h5>
+      <a href="#">Disposables</a>
+      <a href="#">Pod Systems</a>
+      <a href="#">New Arrivals</a>
+    </div>
+    <div class="ft-col">
+      <h5>Contact</h5>
+      <a href="tel:78456656">78456656</a>
+      <a href="#">Facebook</a>
+      <a href="#">Instagram</a>
+    </div>
+    <div class="ft-col">
+      <h5>Info</h5>
+      <a href="#">Age Policy</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </footer>
+  <div class="ft-bot">
+    <span class="ft-copy">© 2026 The Vape House — All rights reserved</span>
+    <span class="ft-warn">⚠ 21+ Only · Nicotine is addictive</span>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div class="overlay" id="ov">
+    <div class="modal">
+      <div class="modal-fire-line"></div>
+      <div class="modal-head">
+        <div class="modal-ttl">Your Cart</div>
+        <button class="modal-x" onclick="closeCart()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="cItems"></div>
+        <div class="ct-row">
+          <div class="ct-lbl">Total</div>
+          <div class="ct-amt" id="cTotal">P0</div>
+        </div>
+        <div class="pf">
+          <div class="pf-ttl">Payment Details</div>
+          <div class="fnb-badge">🔒 Secure Payment · SSL Encrypted</div>
+          <div class="ct-types">
+            <button class="ctt on"  onclick="selectCardType(this)">VISA</button>
+            <button class="ctt"     onclick="selectCardType(this)">MASTERCARD</button>
+            <button class="ctt"     onclick="selectCardType(this)">AMEX</button>
+          </div>
+          <div class="frow">
+            <div class="ff full"><label class="fl">Cardholder Name</label><input class="fi" id="fn" type="text" placeholder="As it appears on card" autocomplete="cc-name"></div>
+          </div>
+          <div class="frow">
+            <div class="ff full"><label class="fl">Card Number</label><input class="fi" id="cn" type="text" placeholder="•••• •••• •••• ••••" maxlength="19" autocomplete="cc-number"></div>
+          </div>
+          <div class="frow">
+            <div class="ff"><label class="fl">Expiry</label><input class="fi" id="ex" type="text" placeholder="MM / YY" maxlength="7" autocomplete="cc-exp"></div>
+            <div class="ff"><label class="fl">CVV</label><input class="fi" id="cv" type="text" placeholder="•••" maxlength="4" autocomplete="cc-csc"></div>
+          </div>
+          <div class="frow">
+            <div class="ff full"><label class="fl">Email for Receipt</label><input class="fi" id="em" type="email" placeholder="your@email.com" autocomplete="email"></div>
+          </div>
+          <button class="pay-main" onclick="pay()"><span id="pb">Complete Purchase</span></button>
+          <div class="pay-sec-note">Details encrypted and processed securely. We never store your card information.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+  <script>
+    // Lightbox
+    function openLb(src) {
+      document.getElementById('lbImg').src = src;
+      document.getElementById('lb').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLb(e) {
+      if (e && e.target !== document.getElementById('lb') && !document.querySelector('.lb-close').contains(e.target)) return;
+      document.getElementById('lb').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.querySelector('.lb-close').addEventListener('click', () => {
+      document.getElementById('lb').classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  </script>
+</body>
 </html>
